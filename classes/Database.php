@@ -15,7 +15,7 @@ class Database {
 
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        echo "Connection successful!";
+        return $pdo;
         
         } catch(PDOException $e){
             echo "Error: " . $e->getMessage();

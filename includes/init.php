@@ -1,5 +1,7 @@
 <?php
 
-//Create spl autoload function - 
-    //Crearte the directory to add classes
-    //Create the path to be able to require the config file as well
+spl_autoload_register(function($classes){
+    require dirname(__DIR__) . "/classes/$classes.php"; 
+});
+
+require dirname(__DIR__) . '/config.php';
