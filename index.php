@@ -1,3 +1,8 @@
+<?php 
+
+
+?>
+
 <?php require('includes/header.php') ?>
 <section>
     <h1>Bike Parking Map</h1>
