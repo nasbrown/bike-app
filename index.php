@@ -10,7 +10,9 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
     $data->bikeName = $_POST['loc-name']; //Can handle on this page
     $data->bikeImage = $_FILES['image-file']['name']; //Handle images seperately
 
-    $data->saveInfo($conn);
+    //$data->saveInfo($conn);
+
+    //header('Location: ' . '/bike-app/'); //redirects page to prevent extra entries
 
 }
 ?>

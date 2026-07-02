@@ -47,18 +47,30 @@ if(mapFunctions.coordinatesArray.length >= 2){
 })
 
 document.addEventListener('submit', async(e) => {
+    e.preventDefault()
     if(e.target.id === 'form-save-db'){
         let bikeForm = document.getElementById('form-save-db')
 
-        let bikeLocationFormData = new FormData(bikeForm);
+        const bikeLocationFormData = new FormData(bikeForm);
         
         try {
-            const res = await fetch('bike-app/bikeData.php', {
+            const res = await fetch('/bike-app/bikeData.php', {
                 method: "POST",
-                body: ''
+                body: bikeLocationFormData
             })
+
+            if(!res.ok){
+                throw new Error(`HTTP Status error: ${res.status}`)
+            }
+
+            const data = await res.json()
+
+            console.log(data)
+
+            return data
+
         } catch (error) {
-            
+            console.error(error)
         }
     }
 })

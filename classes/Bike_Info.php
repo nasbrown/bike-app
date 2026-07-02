@@ -3,6 +3,8 @@
 class Bike_Info {
     public $bikeName = null;
     public $bikeImage = null;
+    public $bikeLat = null;
+    public $bikeLong = null;
     public array $errors = [];
 
     public function getInfo(PDO $conn): array{
@@ -28,16 +30,18 @@ class Bike_Info {
     public function saveInfo(PDO $conn){
         if($this->validate()){
             $sql = "INSERT INTO parkingInfo (location_name, image_file) " .
-                "VALUES (:location_name, :image_file)";
+                "VALUES (:location_name, :image_file, :latitude, :longitude)";
 
             $stmt = $conn->prepare($sql);
 
             $stmt->bindValue(':location_name', $this->bikeName, PDO::PARAM_STR);
             $stmt->bindValue(':image_file', $this->bikeImage, PDO::PARAM_STR);
-
+            $stmt->bindValue(':coordinates', $this->bikeLat, PDO::PARAM_STR);
+            $stmt->bindValue(':coordinates', $this->bikeLong, PDO::PARAM_STR);
+            
             $stmt->execute();
         }
     }
 
-    
+   
 }
