@@ -17,14 +17,30 @@ const mapMethods = () => {
 
     let coordArr = []
     let coordinates = []
+    let userLatitude = ''
+    let userLongitude = ''
 
     return {
         coordinatesArray: coordArr,
-        coordinatesLatLngArr: coordinates,
+        coordinatesLatLngArr: [userLatitude, userLongitude],
+        userLat: userLatitude,
+        userLong: userLongitude
     }
 }
 
 const mapFunctions = mapMethods()
+
+document.addEventListener('click', (e) => {
+    if(e.target.id === 'get-loc'){
+        navigator.geolocation.getCurrentPosition((position) => {
+            mapFunctions.userLat = position.coords.latitude
+            mapFunctions.userLong = position.coords.longitude
+            return mapFunctions.coordinatesLatLngArr = [mapFunctions.userLat, mapFunctions.userLong]
+        })
+    }
+})
+
+
 
 
 map.on('click', (e) =>{
@@ -64,8 +80,6 @@ document.addEventListener('submit', async(e) => {
             }
 
             const data = await res.json()
-
-            console.log(data)
 
             return data
 

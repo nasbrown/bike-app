@@ -20,6 +20,9 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
 <?php require('includes/header.php') ?>
 <section>
     <h1>Bike Parking Map</h1>
+    <div>
+        <button id="get-loc">Get Location</button>
+    </div>
     <?php if(!empty($data->errors)): ?>
         <ul>
             <?php foreach($data->errors as $error): ?>
