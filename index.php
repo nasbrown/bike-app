@@ -4,23 +4,27 @@ require('includes/init.php');
 
 $conn = require('includes/db.php');
 
+$data = new Bike_Info();
+
 if($_SERVER["REQUEST_METHOD"] === 'POST'){
-    $name = $_POST['loc-name'];
-    $image = $_POST['image-file'];
+    $data->bikeName = $_POST['loc-name']; //Can handle on this page
+    $data->bikeImage = $_FILES['image-file']['name']; //Handle images seperately
 
-    $sql = "INSERT INTO (location_name, image) VALUES" . "(" . "$name, $image" . ")";
+    $data->saveInfo($conn);
 
-    $stmt = $conn->prepare($sql);
-
-    $stmt->execute();
-
-    var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));
 }
 ?>
 
 <?php require('includes/header.php') ?>
 <section>
     <h1>Bike Parking Map</h1>
+    <?php if(!empty($data->errors)): ?>
+        <ul>
+            <?php foreach($data->errors as $error): ?>
+                <li><?= $error ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
    <div id="map">
 
    </div>

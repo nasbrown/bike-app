@@ -1,43 +1,47 @@
-/*
-    var popup = L.popup()
-    .setLatLng(latlng)
-    .setContent('<p>Hello world!<br />This is a nice popup.</p>')
-    .openOn(map);
+const initializeMap = (id = 'map', coordinates, num = 15) => {
+    return L.map(id, {center: coordinates, zoom: num})
+}
 
-    var popup = L.popup(latlng, {content: '<p>Hello world!<br />This is a nice popup.</p>'})
-    .openOn(map);
+const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
+    return L.tileLayer(tileLayer, {
+        maxZoom: zoom,
+        attribution: credit
+    }).addTo(theMap)
+}
 
-    <form method="POST" class="form-db" enctype="multipart/form-data">
-                    <label>Take your picture</label>
-                    <button type="submit">Submit</button>
-                </form>
-*/
+let map = initializeMap('map', ['42.0988', '-75.9206'], 15)
 
-let map = L.map('map', {center: ['42.0988', '-75.9206'], zoom: 15})
-let coordArr = []
+initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
+const mapMethods = () => {
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map)
+    let coordArr = []
+    let coordinates = []
+
+    return {
+        coordinatesArray: coordArr,
+        coordinatesLatLngArr: coordinates,
+    }
+}
+
+const mapFunctions = mapMethods()
 
 
 map.on('click', (e) =>{
 
-let coordinates = [e.latlng.lat, e.latlng.lng]
+mapFunctions.coordinatesLatLngArr = [e.latlng.lat, e.latlng.lng]
 
-let marker = myNewMarker(coordinates, map)
+let marker = myNewMarker(mapFunctions.coordinatesLatLngArr, map)
 
-mynewPopup(coordinates, insertFormHtml(), map)
+mynewPopup(mapFunctions.coordinatesLatLngArr, insertFormHtml(), map)
 
-coordArr.push(marker)
+mapFunctions.coordinatesArray.push(marker)
 
-if(coordArr.length >= 2){
+if(mapFunctions.coordinatesArray.length >= 2){
     console.log('Remove')
-    map.removeLayer(coordArr[0])
-    coordArr.shift(coordArr[0])
-    console.log(coordArr)
+    map.removeLayer(mapFunctions.coordinatesArray[0])
+    mapFunctions.coordinatesArray.shift(mapFunctions.coordinatesArray[0])
+    console.log(mapFunctions.coordinatesArray)
     return
 } 
 })
@@ -45,10 +49,17 @@ if(coordArr.length >= 2){
 document.addEventListener('submit', async(e) => {
     if(e.target.id === 'form-save-db'){
         let bikeForm = document.getElementById('form-save-db')
-        e.preventDefault()
 
         let bikeLocationFormData = new FormData(bikeForm);
-        console.log(bikeLocationFormData)
+        
+        try {
+            const res = await fetch('bike-app/bikeData.php', {
+                method: "POST",
+                body: ''
+            })
+        } catch (error) {
+            
+        }
     }
 })
 
