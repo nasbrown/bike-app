@@ -9,7 +9,19 @@ const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
     }).addTo(theMap)
 }
 
-let map = initializeMap('map', ['42.0988', '-75.9206'], 15)
+const getUserLocation = (coords = ['42.0988', '-75.9206']) => {
+    navigator.geolocation.getCurrentPosition((position) => {
+        return coords = [position.coords.latitude, position.coords.longitude]
+    })
+
+    return coords
+}
+
+/*
+Need to take the value from the navigator and place it inside of the map variable and give a backup just in case it's undefined
+*/
+
+let map = initializeMap('map', getUserLocation(), 15)
 
 initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
@@ -39,9 +51,6 @@ document.addEventListener('click', (e) => {
         })
     }
 })
-
-
-
 
 map.on('click', (e) =>{
 
