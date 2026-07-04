@@ -1,4 +1,4 @@
-const initializeMap = (id = 'map', coordinates, num = 15) => {
+const initializeMap = (id = 'map', coordinates = ['42.0988', '-75.9206'], num = 15) => {
     return L.map(id, {center: coordinates, zoom: num})
 }
 
@@ -9,25 +9,42 @@ const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
     }).addTo(theMap)
 }
 
-let coordinates = []
-
 const getUserLocation = (coords = ['42.0988', '-75.9206']) => {
     navigator.geolocation.getCurrentPosition((position) => {
-        return coords = [position.coords.latitude, position.coords.longitude]
+        return coords = [`${position.coords.latitude}`, `${position.coords.longitude}`]
     })
 
-    return coordinates = coords
+    return coords
 }
 
-document.addEventListener('DOMContentLoaded', (e) => {
-    getUserLocation()
-})
+const getLocationPermissionState = async () => {
+    try {
+        let permission = await navigator.permissions.query({name: "geolocation"})
+
+        let state =  await permission.state
+
+        if(state === 'granted'){
+            console.log(getUserLocation())
+            return getUserLocation()
+        } else if (state === 'denied'){
+            return console.log("Permission denied")
+        } else {
+            //Run function
+           console.log(getUserLocation())
+        }
+
+    } catch (error){
+        return console.error(` Error message: ${error}`)
+    }
+}
+
+let coords = await getLocationPermissionState()
 
 /*
 Need to take the value from the navigator and place it inside of the map variable and give a backup just in case it's undefined
 */
 
-let map = initializeMap('map', coordinates, 15)
+let map = initializeMap('map', coords, 15)
 
 initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
