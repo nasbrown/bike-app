@@ -27,10 +27,15 @@ const getLocationPermissionState = async () => {
             console.log(getUserLocation())
             return getUserLocation()
         } else if (state === 'denied'){
-            return console.log("Permission denied")
-        } else {
-            //Run function
-           console.log(getUserLocation())
+
+            let body = document.body
+
+            return body.innerHTML = `
+                <h1>Sorry!, Need Location to continue... Unlock permission here: <button onclick=${getUserLocation()}>Get My Location</button></h1>
+            `
+        } else if (state === 'prompt') {
+          
+           return getUserLocation()
         }
 
     } catch (error){
