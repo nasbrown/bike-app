@@ -38,32 +38,24 @@ const getLocationPermissionState = async () => {
     }
 }
 
-let coords = await getLocationPermissionState()
+const mapMethods = async () => {
+
+    let coords = await getLocationPermissionState()
+
+    return {
+        coordinatesArray: coords
+    }
+}
+
+const mapFunctions = mapMethods()
 
 /*
 Need to take the value from the navigator and place it inside of the map variable and give a backup just in case it's undefined
 */
 
-let map = initializeMap('map', coords, 15)
+let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
 
 initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
-
-const mapMethods = () => {
-
-    let coordArr = []
-    let coordinates = []
-    let userLatitude = ''
-    let userLongitude = ''
-
-    return {
-        coordinatesArray: coordArr,
-        coordinatesLatLngArr: [userLatitude, userLongitude],
-        userLat: userLatitude,
-        userLong: userLongitude
-    }
-}
-
-const mapFunctions = mapMethods()
 
 document.addEventListener('click', (e) => {
     if(e.target.id === 'get-loc'){
