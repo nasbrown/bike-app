@@ -62,27 +62,24 @@ let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
 
 initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', async (e) => {
     if(e.target.id === 'get-loc'){
-        navigator.geolocation.getCurrentPosition((position) => {
-            mapFunctions.userLat = position.coords.latitude
-            mapFunctions.userLong = position.coords.longitude
-            return mapFunctions.coordinatesLatLngArr = [mapFunctions.userLat, mapFunctions.userLong]
-        })
+        return await getUserLocation()
     }
 })
 
 map.on('click', (e) =>{
+ mapFunctions.coordinatesArray = getUserLocation()
+ 
+ console.log(mapFunctions.coordinatesArray)
 
-mapFunctions.coordinatesLatLngArr = [e.latlng.lat, e.latlng.lng]
+let marker = myNewMarker(mapFunctions.coordinatesArray, map)
 
-let marker = myNewMarker(mapFunctions.coordinatesLatLngArr, map)
-
-mynewPopup(mapFunctions.coordinatesLatLngArr, insertFormHtml(), map)
+mynewPopup(mapFunctions.coordinatesArray, insertFormHtml(), map)
 
 mapFunctions.coordinatesArray.push(marker)
 
-if(mapFunctions.coordinatesArray.length >= 2){
+if(mapFunctions.coordinatesArray.length >= 3){
     console.log('Remove')
     map.removeLayer(mapFunctions.coordinatesArray[0])
     mapFunctions.coordinatesArray.shift(mapFunctions.coordinatesArray[0])
