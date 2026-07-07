@@ -5,7 +5,7 @@ const initializeMap = (id = 'map', coordinates = ['42.0988', '-75.9206'], num = 
 const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
     return L.tileLayer(tileLayer, {
         maxZoom: zoom,
-        attribution: credit
+        attribution: credit,
     }).addTo(theMap)
 }
 
@@ -24,7 +24,7 @@ const getLocationPermissionState = async () => {
         let state =  await permission.state
 
         if(state === 'granted'){
-            console.log(getUserLocation())
+           
             return getUserLocation()
         } else if (state === 'denied'){
 
@@ -52,7 +52,7 @@ const mapMethods = async () => {
     }
 }
 
-const mapFunctions = mapMethods()
+const mapFunctions = await mapMethods()
 
 /*
 Need to take the value from the navigator and place it inside of the map variable and give a backup just in case it's undefined
@@ -60,32 +60,46 @@ Need to take the value from the navigator and place it inside of the map variabl
 
 let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
 
-initializeTileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
-
-document.addEventListener('click', async (e) => {
-    if(e.target.id === 'get-loc'){
-        return await getUserLocation()
-    }
-})
+initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
 map.on('click', (e) =>{
- mapFunctions.coordinatesArray = getUserLocation()
- 
- console.log(mapFunctions.coordinatesArray)
 
-let marker = myNewMarker(mapFunctions.coordinatesArray, map)
+let coordinates = [e.latlng.lat, e.latlng.lng]
 
-mynewPopup(mapFunctions.coordinatesArray, insertFormHtml(), map)
+const newCoordinatesArr = []
 
-mapFunctions.coordinatesArray.push(marker)
+newCoordinatesArr.push(coordinates)
 
-if(mapFunctions.coordinatesArray.length >= 3){
+console.log(newCoordinatesArr)
+
+let marker = myNewMarker(newCoordinatesArr[0])
+
+addToMap(marker, map)
+
+mynewPopup(newCoordinatesArr[0], insertFormHtml(), map)
+
+if(newCoordinatesArr.length >= 2){
     console.log('Remove')
-    map.removeLayer(mapFunctions.coordinatesArray[0])
-    mapFunctions.coordinatesArray.shift(mapFunctions.coordinatesArray[0])
-    console.log(mapFunctions.coordinatesArray)
+    console.log(newCoordinatesArr)
+    map.removeLayer(newCoordinatesArr[0])
+    newCoordinatesArr.shift(newCoordinatesArr[0])
     return
-} 
+}
+
+/*
+
+let marker = myNewMarker(newCoordinatesArr[0], map)
+
+mynewPopup(coordinates, insertFormHtml(), map)
+
+coordinates.push(marker)
+
+if(coordinates.length >= 2){
+    console.log('Remove')
+    map.removeLayer(coordinates[0])
+    console.log(coordinates)
+    return
+} */
 })
 
 document.addEventListener('submit', async(e) => {
@@ -115,8 +129,12 @@ document.addEventListener('submit', async(e) => {
     }
 })
 
-const myNewMarker = (coordinates = [], theMap = {}) => { //factory functions
-    return L.marker(coordinates).addTo(theMap)
+const myNewMarker = (coordinates = []) => { //factory functions
+    return L.marker(coordinates)
+}
+
+const addToMap = (func, theMap) => {
+    return func.addTo(theMap) 
 }
 
 const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
