@@ -46,9 +46,13 @@ const getLocationPermissionState = async () => {
 const mapMethods = async () => {
 
     let coords = await getLocationPermissionState()
+    let coordPairsArr = []
+    let markArr = []
 
     return {
-        coordinatesArray: coords
+        coordinatesArray: coords,
+        coordPair: coordPairsArr,
+        markerArr: markArr
     }
 }
 
@@ -66,23 +70,18 @@ map.on('click', (e) =>{
 
 let coordinates = [e.latlng.lat, e.latlng.lng]
 
-const newCoordinatesArr = []
+let marker = addToMap(myNewMarker(coordinates), map)
 
-newCoordinatesArr.push(coordinates)
+mynewPopup(coordinates, insertFormHtml(), map)
 
-console.log(newCoordinatesArr)
+mapFunctions.coordPair.push(coordinates)
+mapFunctions.markerArr.push(marker)
 
-let marker = myNewMarker(newCoordinatesArr[0])
 
-addToMap(marker, map)
-
-mynewPopup(newCoordinatesArr[0], insertFormHtml(), map)
-
-if(newCoordinatesArr.length >= 2){
-    console.log('Remove')
-    console.log(newCoordinatesArr)
-    map.removeLayer(newCoordinatesArr[0])
-    newCoordinatesArr.shift(newCoordinatesArr[0])
+if(mapFunctions.markerArr.length >= 2){
+    map.removeLayer(mapFunctions.markerArr[0])
+    mapFunctions.markerArr.shift(mapFunctions.markerArr[0])
+    mapFunctions.coordPair.shift(mapFunctions.coordPair[0])
     return
 }
 
