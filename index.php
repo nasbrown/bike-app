@@ -33,6 +33,9 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
    <div id="map">
 
    </div>
+   <div id="user-data">
+
+   </div>
 </section>
 <?php require('includes/footer.php') ?>
 

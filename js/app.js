@@ -77,36 +77,26 @@ mynewPopup(coordinates, insertFormHtml(), map)
 mapFunctions.coordPair.push(coordinates)
 mapFunctions.markerArr.push(marker)
 
-
 if(mapFunctions.markerArr.length >= 2){
     map.removeLayer(mapFunctions.markerArr[0])
     mapFunctions.markerArr.shift(mapFunctions.markerArr[0])
     mapFunctions.coordPair.shift(mapFunctions.coordPair[0])
     return
 }
-
-/*
-
-let marker = myNewMarker(newCoordinatesArr[0], map)
-
-mynewPopup(coordinates, insertFormHtml(), map)
-
-coordinates.push(marker)
-
-if(coordinates.length >= 2){
-    console.log('Remove')
-    map.removeLayer(coordinates[0])
-    console.log(coordinates)
-    return
-} */
 })
 
 document.addEventListener('submit', async(e) => {
     e.preventDefault()
-    if(e.target.id === 'form-save-db'){
-        let bikeForm = document.getElementById('form-save-db')
 
-        const bikeLocationFormData = new FormData(bikeForm);
+    if(e.target.id === 'form-save-db'){
+
+        let bikeElem = document.getElementById('form-save-db')
+
+        const bikeLocationFormData = new FormData(bikeElem);
+
+        bikeLocationFormData.append('coordinatesLat', `${mapFunctions.coordPair[0][0]}`)
+
+        bikeLocationFormData.append('coordinatesLng', `${mapFunctions.coordPair[0][1]}`)
         
         try {
             const res = await fetch('/bike-app/bikeData.php', {
@@ -118,12 +108,16 @@ document.addEventListener('submit', async(e) => {
                 throw new Error(`HTTP Status error: ${res.status}`)
             }
 
-            const data = await res.json()
+            const data = await res.text()
 
-            return data
+            console.log(data)
+
+            map.closePopup()
+
+            //return data
 
         } catch (error) {
-            console.error(error)
+            console.error(`${error}, ${JSON.stringify(bikeLocationFormData)}`)
         }
     }
 })
@@ -141,19 +135,27 @@ const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
 }
 
 const insertFormHtml = () => {
-    return `<form method="POST" id="form-save-db" enctype="multipart/form-data">
-                    <div>
-                        <label for="image-file">Take your picture</label>
-                    </div>
-                    <div>
-                        <input type="file" id="image-file" name="image-file">
-                    </div>
-                    <div>
+    return `<form method="POST" action="/bike-app/bikeData.php" id="form-save-db" enctype="multipart/form-data">
+                      <div>
                         <label for="loc-name">Location Name:</label>
                     </div>
                     <div>
                         <input type="text" id="loc-name" name="loc-name">
                     </div>
+                    div>
+                        <label for="image-file">Take your picture</label>
+                    </div>
+                    <div>
+                        <input type="file" id="image-file" name="image-file">
+                    </div>
                     <button type="submit">Submit</button>
                 </form>`
 }
+
+/*
+<div>
+                        <label for="image-file">Take your picture</label>
+                    </div>
+                    <div>
+                        <input type="file" id="image-file" name="image-file">
+                    </div> */
