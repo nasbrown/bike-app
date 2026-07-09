@@ -99,7 +99,7 @@ document.addEventListener('submit', async(e) => {
         bikeLocationFormData.append('coordinatesLng', `${mapFunctions.coordPair[0][1]}`)
         
         try {
-            const res = await fetch('/bike-app/bikeData.php', {
+            const res = await fetch('/bike-app/includes/bikeData.php', {
                 method: "POST",
                 body: bikeLocationFormData
             })
@@ -143,7 +143,7 @@ const insertFormHtml = () => {
                         <input type="text" id="loc-name" name="loc-name">
                     </div>
                     <div>
-                        <label for="image-file">Take your picture</label>
+                        <label for="image-file">Take your pictures</label>
                     </div>
                     <div>
                         <input type="file" id="image-file" name="image-file">

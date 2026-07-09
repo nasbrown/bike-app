@@ -4,7 +4,6 @@ require 'includes/init.php';
 
 require 'includes/googleauth.php';
 
-
 if(!isset($_GET['code'])){
     exit("Login Failed");
 }

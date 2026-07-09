@@ -1,4 +1,4 @@
 
     </main>
-<script src="js/app.js" type="module" defer></script>
+<script src="/bike-app/js/app.js" type="module" defer></script>
 </html>
