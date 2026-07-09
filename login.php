@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-
 require 'includes/init.php';
 
 $client = new Google\Client;
