@@ -4,17 +4,6 @@ require('includes/init.php');
 
 $conn = require('includes/db.php');
 
-$data = new Bike_Info();
-
-if($_SERVER["REQUEST_METHOD"] === 'POST'){
-    $data->bikeName = $_POST['loc-name']; //Can handle on this page
-    $data->bikeImage = $_FILES['image-file']['name']; //Handle images seperately
-
-    //$data->saveInfo($conn);
-
-    //header('Location: ' . '/bike-app/'); //redirects page to prevent extra entries
-
-}
 ?>
 
 <?php require('includes/header.php') ?>

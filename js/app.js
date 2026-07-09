@@ -136,13 +136,13 @@ const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
 
 const insertFormHtml = () => {
     return `<form method="POST" action="/bike-app/bikeData.php" id="form-save-db" enctype="multipart/form-data">
-                      <div>
+                    <div>
                         <label for="loc-name">Location Name:</label>
                     </div>
                     <div>
                         <input type="text" id="loc-name" name="loc-name">
                     </div>
-                    div>
+                    <div>
                         <label for="image-file">Take your picture</label>
                     </div>
                     <div>
@@ -151,11 +151,3 @@ const insertFormHtml = () => {
                     <button type="submit">Submit</button>
                 </form>`
 }
-
-/*
-<div>
-                        <label for="image-file">Take your picture</label>
-                    </div>
-                    <div>
-                        <input type="file" id="image-file" name="image-file">
-                    </div> */
