@@ -17,3 +17,5 @@ $oauth = new Google\Service\Oauth2($client);
 $userInfo = $oauth->userinfo->get();
 
 var_dump($userInfo->email, $userInfo->givenName, $userInfo->name);
+
+Url::redirect('/bike-app/admin/');

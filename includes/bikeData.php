@@ -2,9 +2,9 @@
 
 header('Content-Type: application/json');
 
-require('includes/init.php');
+require('init.php');
 
-$conn = require('includes/db.php');
+$conn = require('db.php');
 
 $data = new Bike_Info();
 

@@ -43,5 +43,9 @@ class Bike_Info {
         }
     }
 
+    public function saveCredentials(PDO $conn){
+        $sql = "";
+    }
+
    
 }
