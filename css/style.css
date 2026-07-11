@@ -1,3 +1,24 @@
 #map{
     height: 400px;
 }
+
+.sign-in{
+    padding: 2rem;
+}
+
+.sign-in img{
+    width: 2rem;
+    height: 2rem;
+    padding-left: .5rem;
+}
+
+.sign-in a{
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    background-color: #2d2f81;
+    color: white;
+    text-decoration: none;
+    align-items: center;
+    align-self: flex-start;
+}

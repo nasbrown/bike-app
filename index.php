@@ -14,7 +14,7 @@ $url = $client->createAuthUrl();
 
 
 <?php require('includes/header.php') ?>
-<section>
+<section class="sign-in">
     <div>
         <h1>Welcome! Sign In to use the Bike Parking App</h1>
         <div>
