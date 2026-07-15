@@ -2,13 +2,27 @@
 
 require 'includes/init.php';
 
-require 'includes/googleauth.php';
+$url = '';
 
-$client->addScope("email");
+var_dump(GoogleAuth::isLoggedIn(), $_SESSION['access_token']);
 
-$client->addScope("profile");
+if(GoogleAuth::isLoggedIn()){
+    Url::redirect('/bike-app/admin');
+} else{
+    $client = new Google\Client;
 
-$url = $client->createAuthUrl();
+    $client->setClientId(BIKE_CLIENT_ID);
+
+    $client->setClientSecret(BIKE_CLIENT_SECRET);
+
+    $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] .'/bike-app/redirect.php');
+
+    $client->addScope("email");
+
+    $client->addScope("profile");
+
+    $url = $client->createAuthUrl();
+}
 
 ?>
 

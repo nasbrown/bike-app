@@ -2,6 +2,10 @@
 
 require('../includes/init.php');
 
+if(!GoogleAuth::isLoggedIn()){
+    exit("You do not have access to this page, please sign in <a href='" . "/bike-app/index.php'" . ">here</a>");
+}
+
 $conn = require('../includes/db.php');
 
 ?>
@@ -11,6 +15,9 @@ $conn = require('../includes/db.php');
     <h1>Bike Parking Map</h1>
     <div>
         <button id="get-loc">Get Location</button>
+    </div>
+    <div>
+        <a href="/bike-app/logout.php">Logout</a>
     </div>
     <?php if(!empty($data->errors)): ?>
         <ul>
