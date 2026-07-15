@@ -2,6 +2,10 @@
 
 require 'includes/init.php';
 
+$conn = require('includes/db.php');
+
+$user = new User;
+
 $client = new Google\Client;
 
 $client->setClientId(BIKE_CLIENT_ID);
@@ -26,6 +30,12 @@ $oauth = new Google\Service\Oauth2($client);
 
 $userInfo = $oauth->userinfo->get();
 
-//var_dump($userInfo->email, $userInfo->givenName, $userInfo->name, $_SESSION['access_token']);
+$user->firstName = $userInfo->getGivenName();
+$user->lastName = $userInfo->getFamilyName();
+$user->userEmail = $userInfo->email;
+
+if($user->doesEmailExist($conn, $user->userEmail)){
+    $user->saveCredentials($conn);
+}
 
 Url::redirect('/bike-app/admin/');

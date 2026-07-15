@@ -4,8 +4,6 @@ require 'includes/init.php';
 
 $url = '';
 
-var_dump(GoogleAuth::isLoggedIn(), $_SESSION['access_token']);
-
 if(GoogleAuth::isLoggedIn()){
     Url::redirect('/bike-app/admin');
 } else{
