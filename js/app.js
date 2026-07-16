@@ -58,10 +58,6 @@ const mapMethods = async () => {
 
 const mapFunctions = await mapMethods()
 
-/*
-Need to take the value from the navigator and place it inside of the map variable and give a backup just in case it's undefined
-*/
-
 let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
@@ -121,6 +117,42 @@ document.addEventListener('submit', async(e) => {
         }
     }
 })
+
+const fetchMarkerValues = async () => {
+    try{
+        const res = await fetch('/bike-app/includes/saveMarkers.php')
+
+        if(!res.ok){
+            throw new Error(`HTTP Status error: ${res.status}`)
+        }
+
+        const data = await res.json()
+
+       let divHtml = data.map((marker) => {
+            return `
+                <div>[${marker.coord_lat}, ${marker.coord_lng}]</div>
+            `
+        }).join(' ')
+
+        document.getElementById('user-data').innerHTML = divHtml
+
+    } catch(error){
+        console.error(`${error}`)
+    }
+}
+
+//await fetchMarkerValues()
+
+const renderMarkers = async () => {
+    let data = await fetchMarkerValues()
+
+    let markers = await data.map((marker) => {
+            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]), map)
+        })
+}
+
+await renderMarkers()
+
 
 const myNewMarker = (coordinates = []) => { //factory functions
     return L.marker(coordinates)

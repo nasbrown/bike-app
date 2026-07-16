@@ -6,23 +6,19 @@ if (!GoogleAuth::isLoggedIn()) {
     exit("You do not have access to this page, please sign in <a href='" . "/bike-app/index.php'" . ">here</a>");
 }
 
-//Handle when token isn't refreshed
-
 $client = new Google\Client;
 
 $client->setClientId(BIKE_CLIENT_ID);
 
 $client->setClientSecret(BIKE_CLIENT_SECRET);
 
+$client->setAccessType('offline');
+
 $client->setAccessToken($_SESSION['access_token']);
 
 $oauth = new Google\Service\Oauth2($client);
 
 $userInfo = $oauth->userinfo->get();
-
-$conn = require('../includes/db.php');
-
-var_dump(User::getId($conn, $userInfo->email));
 
 ?>
 
@@ -47,7 +43,7 @@ var_dump(User::getId($conn, $userInfo->email));
 
     </div>
     <div id="user-data">
-
+        
     </div>
 </section>
 <?php require('../includes/footer.php') ?>

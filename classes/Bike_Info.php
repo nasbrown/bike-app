@@ -6,6 +6,7 @@ class Bike_Info {
     public $bikeLat = null;
     public $bikeLong = null;
     public string $bikeUserId = '';
+    public array $userCoordArr = [];
     public array $errors = [];
 
     public function getInfo(PDO $conn): array{
@@ -45,5 +46,13 @@ class Bike_Info {
         }
     }
 
-   
+   public static function getCoordMarkers(PDO $conn, int $id): array{
+        $sql = "SELECT coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+   }
 }
