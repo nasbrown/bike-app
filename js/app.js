@@ -87,7 +87,7 @@ const fetchMarkerValues = async () => {
     }
 }
 
-const initializeRenderMarkers = async () => {
+const initializeRenderedMarkers = async () => {
     let data = await fetchMarkerValues()
 
     let markers = await data.map((marker) => {
@@ -101,7 +101,7 @@ const initializeRenderMarkers = async () => {
         })
 }
 
-await initializeRenderMarkers()
+await initializeRenderedMarkers()
 
 const renderMarker = (coords = [], locName, imgFile, map) => {
     return addToMap(myNewMarker(coords).

@@ -14,9 +14,18 @@ $client->setClientId(BIKE_CLIENT_ID);
 
 $client->setClientSecret(BIKE_CLIENT_SECRET);
 
-$client->setAccessType('offline');
+if($client->isAccessTokenExpired()){
+    $client->setAccessType('offline');
+    $client->setPrompt('select_account consent');
+    exit(var_dump($client->getRefreshToken()));
 
-$client->setAccessToken($_SESSION['access_token']);
+    if($refreshToken){
+        $client->fetchAccessTokenWithRefreshToken($refreshToken);
+        $token = $client->getAccessToken();
+        $_SESSION['access_token'] = $token;
+        $client->setAccessToken($_SESSION['access_token']);
+    }
+}
 
 $oauth = new Google\Service\Oauth2($client);
 
@@ -29,7 +38,7 @@ $userInfo = $oauth->userinfo->get();
     <h1>Bike Parking Map</h1>
     <h2>Welcome <?= $userInfo->givenName ?>!</h2>
     <div>
-        <button id="get-loc">Get Location</button>
+        <button id="get-loc" onclick="getLocationPermissionState()">Get Location</button>
     </div>
     <div>
         <a href="/bike-app/logout.php">Logout</a>

@@ -44,4 +44,17 @@ class User
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function updateTokens(PDO $conn, string $email, $acc_token, $refresh_token, int $id){
+        if($this->doesEmailExist($conn, $email)){
+            $sql = "INSERT INTO users(access_token, refresh_token) " .
+                    "VALUES(:access_token, :refresh_token) WHERE id = $id";
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindValue(':access_token', $acc_token, PDO::PARAM_STR);
+            $stmt->bindValue(':refresh_token', $refresh_token, PDO::PARAM_STR);
+
+            $stmt->execute();
+        } 
+    }
 }
