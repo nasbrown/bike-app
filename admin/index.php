@@ -5,7 +5,6 @@ require('../includes/init.php');
 if (!GoogleAuth::isLoggedIn()) {
     exit("You do not have access to this page, please sign in <a href='" . "/bike-app/index.php'" . ">here</a>");
 }
-
 $data = new Bike_Info();
 
 $client = new Google\Client;
@@ -14,18 +13,9 @@ $client->setClientId(BIKE_CLIENT_ID);
 
 $client->setClientSecret(BIKE_CLIENT_SECRET);
 
-if($client->isAccessTokenExpired()){
-    $client->setAccessType('offline');
-    $client->setPrompt('select_account consent');
-    exit(var_dump($client->getRefreshToken()));
+$client->setAccessType('offline');
 
-    if($refreshToken){
-        $client->fetchAccessTokenWithRefreshToken($refreshToken);
-        $token = $client->getAccessToken();
-        $_SESSION['access_token'] = $token;
-        $client->setAccessToken($_SESSION['access_token']);
-    }
-}
+$client->setAccessToken($_SESSION['access_token']);
 
 $oauth = new Google\Service\Oauth2($client);
 

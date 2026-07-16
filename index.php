@@ -15,6 +15,10 @@ if(GoogleAuth::isLoggedIn()){
 
     $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] .'/bike-app/redirect.php');
 
+    $client->setAccessType('offline');
+
+    $client->setPrompt('consent');
+
     $client->addScope("email");
 
     $client->addScope("profile");

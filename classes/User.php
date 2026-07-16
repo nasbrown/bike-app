@@ -5,17 +5,22 @@ class User
     public string $firstName;
     public string $lastName;
     public string $userEmail;
+    public string $accessToken;
+    public string $refreshToken;
 
     public function saveCredentials(PDO $conn)
     {
-        $sql = "INSERT INTO users(first_name, last_name, email)" .
-            "VALUES(:first_name, :last_name, :email)";
+        $sql = "INSERT INTO users(first_name, last_name, email, access_token, refresh_token)" .
+            "VALUES(:first_name, :last_name, :email, :access_token, :refresh_token)";
 
         $stmt = $conn->prepare($sql);
 
         $stmt->bindValue(':first_name', $this->firstName, PDO::PARAM_STR);
         $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
         $stmt->bindValue(':email', $this->userEmail, PDO::PARAM_STR);
+        $stmt->bindValue(':access_token', $this->accessToken, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $this->refreshToken, PDO::PARAM_STR);
+     
 
         $stmt->execute();
     }
@@ -45,16 +50,17 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateTokens(PDO $conn, string $email, $acc_token, $refresh_token, int $id){
+    public function updateTokens(PDO $conn, int $id, string $email){
         if($this->doesEmailExist($conn, $email)){
             $sql = "INSERT INTO users(access_token, refresh_token) " .
                     "VALUES(:access_token, :refresh_token) WHERE id = $id";
+
             $stmt = $conn->prepare($sql);
 
-            $stmt->bindValue(':access_token', $acc_token, PDO::PARAM_STR);
-            $stmt->bindValue(':refresh_token', $refresh_token, PDO::PARAM_STR);
+            $stmt->bindValue(':access_token', $this->accessToken, PDO::PARAM_STR);
+            $stmt->bindValue(':refresh_token', $this->refreshToken, PDO::PARAM_STR);
 
             $stmt->execute();
-        } 
+        }
     }
 }
