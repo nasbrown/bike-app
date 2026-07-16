@@ -34,4 +34,14 @@ class User
             return true;
         }
     }
+
+    public static function getId(PDO $conn, string $email){
+        $sql = "SELECT id FROM users WHERE email = '$email'";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
