@@ -21,9 +21,9 @@ class Bike_Info {
 
     protected function validate(): bool{
         if($this->bikeName === ''){
-            $errors[] = 'Must type in bike location';
+            $this->errors[] = 'Must type in bike location';
         } else if($this->bikeImage === ''){
-            $errors[] = 'Must take a picture of bike location';
+            $this->errors[] = 'Must take a picture of bike location';
         }
 
         return true;
@@ -46,8 +46,8 @@ class Bike_Info {
         }
     }
 
-   public static function getCoordMarkers(PDO $conn, int $id): array{
-        $sql = "SELECT coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
+   public static function getCoordMarkerData(PDO $conn, int $id): array{
+        $sql = "SELECT location_name, image_file, coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
 
         $stmt = $conn->prepare($sql);
 

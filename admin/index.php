@@ -6,6 +6,8 @@ if (!GoogleAuth::isLoggedIn()) {
     exit("You do not have access to this page, please sign in <a href='" . "/bike-app/index.php'" . ">here</a>");
 }
 
+$data = new Bike_Info();
+
 $client = new Google\Client;
 
 $client->setClientId(BIKE_CLIENT_ID);
@@ -43,7 +45,7 @@ $userInfo = $oauth->userinfo->get();
 
     </div>
     <div id="user-data">
-        
+
     </div>
 </section>
 <?php require('../includes/footer.php') ?>

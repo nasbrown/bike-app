@@ -87,15 +87,31 @@ const fetchMarkerValues = async () => {
     }
 }
 
-const renderMarkers = async () => {
+const initializeRenderMarkers = async () => {
     let data = await fetchMarkerValues()
 
     let markers = await data.map((marker) => {
-            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).bindPopup('Helllo').openPopup(), map)
+            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).
+                            bindPopup(`
+                                <div>${marker.location_name}</div>
+                                <div><img src="${marker.image_file}"></div>
+                                <div>Coordinates: [${marker.coord_lat}, ${marker.coord_lng}]</div>
+                                `).
+                            openPopup(), map)
         })
 }
 
-await renderMarkers()
+await initializeRenderMarkers()
+
+const renderMarker = (coords = [], locName, imgFile, map) => {
+    return addToMap(myNewMarker(coords).
+                            bindPopup(`
+                                <div>${locName}</div>
+                                <div><img src="${imgFile}"></div>
+                                <div>Coordinates: [${coords[0]}, ${coords[1]}]</div>
+                                `).
+                            openPopup(), map)
+}
 
 map.on('click', (e) =>{
 
@@ -145,7 +161,11 @@ document.addEventListener('submit', async(e) => {
 
             map.closePopup()
 
-            //return data
+            renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
+                            bikeLocationFormData.get('loc-name'),
+                            bikeLocationFormData.get('image-file'),
+                        map)
+
 
         } catch (error) {
             console.error(`${error}, ${JSON.stringify(bikeLocationFormData)}`)
@@ -159,17 +179,18 @@ const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
 
 const insertFormHtml = () => {
     return `<form method="POST" action="/bike-app/bikeData.php" id="form-save-db" enctype="multipart/form-data">
+                    <div class="hidden">Missing Fields</div>
                     <div>
                         <label for="loc-name">Location Name:</label>
                     </div>
                     <div>
-                        <input type="text" id="loc-name" name="loc-name">
+                        <input type="text" id="loc-name" name="loc-name" required>
                     </div>
                     <div>
                         <label for="image-file">Take your pictures</label>
                     </div>
                     <div>
-                        <input type="file" id="image-file" name="image-file">
+                        <input type="file" id="image-file" name="image-file" required>
                     </div>
                     <button type="submit">Submit</button>
                 </form>`

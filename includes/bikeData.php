@@ -21,6 +21,7 @@ $oauth = new Google\Service\Oauth2($client);
 $userInfo = $oauth->userinfo->get();
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    
 $data->bikeName = htmlspecialchars($_POST['loc-name']) ?? 'Hey';
 
 $data->bikeImage = htmlspecialchars($_FILES['image-file']['name']) ?? 'File';
