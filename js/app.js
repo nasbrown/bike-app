@@ -9,6 +9,14 @@ const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
     }).addTo(theMap)
 }
 
+const myNewMarker = (coordinates = []) => { //factory functions
+    return L.marker(coordinates)
+}
+
+const addToMap = (func, theMap) => {
+    return func.addTo(theMap) 
+}
+
 const getUserLocation = (coords = ['42.0988', '-75.9206']) => {
     navigator.geolocation.getCurrentPosition((position) => {
         return coords = [`${position.coords.latitude}`, `${position.coords.longitude}`]
@@ -61,6 +69,33 @@ const mapFunctions = await mapMethods()
 let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
+
+const fetchMarkerValues = async () => {
+    try{
+        const res = await fetch('/bike-app/includes/saveMarkers.php')
+
+        if(!res.ok){
+            throw new Error(`HTTP Status error: ${res.status}`)
+        }
+
+        const data = await res.json()
+
+       return data
+
+    } catch(error){
+        console.error(`${error}`)
+    }
+}
+
+const renderMarkers = async () => {
+    let data = await fetchMarkerValues()
+
+    let markers = await data.map((marker) => {
+            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).bindPopup('Helllo').openPopup(), map)
+        })
+}
+
+await renderMarkers()
 
 map.on('click', (e) =>{
 
@@ -117,50 +152,6 @@ document.addEventListener('submit', async(e) => {
         }
     }
 })
-
-const fetchMarkerValues = async () => {
-    try{
-        const res = await fetch('/bike-app/includes/saveMarkers.php')
-
-        if(!res.ok){
-            throw new Error(`HTTP Status error: ${res.status}`)
-        }
-
-        const data = await res.json()
-
-       let divHtml = data.map((marker) => {
-            return `
-                <div>[${marker.coord_lat}, ${marker.coord_lng}]</div>
-            `
-        }).join(' ')
-
-        document.getElementById('user-data').innerHTML = divHtml
-
-    } catch(error){
-        console.error(`${error}`)
-    }
-}
-
-//await fetchMarkerValues()
-
-const renderMarkers = async () => {
-    let data = await fetchMarkerValues()
-
-    let markers = await data.map((marker) => {
-            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]), map)
-        })
-}
-
-await renderMarkers()
-
-
-const myNewMarker = (coordinates = []) => { //factory functions
-    return L.marker(coordinates)
-}
-
-const addToMap = (func, theMap) => {
-    return func.addTo(theMap) 
-}
 
 const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
     return L.popup().setLatLng(coordinates).setContent(html).openOn(theMap)
