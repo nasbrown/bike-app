@@ -19,7 +19,7 @@ class User
         $stmt->bindValue(':last_name', $this->lastName, PDO::PARAM_STR);
         $stmt->bindValue(':email', $this->userEmail, PDO::PARAM_STR);
         $stmt->bindValue(':access_token', $this->accessToken, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $this->refreshToken, PDO::PARAM_STR);
+        $stmt->bindValue(':refresh_token', $this->refreshToken, PDO::PARAM_STR);
      
 
         $stmt->execute();

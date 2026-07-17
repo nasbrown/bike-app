@@ -22,6 +22,6 @@ $conn = require('db.php');
 
 $userId = User::getId($conn, $userInfo->email);
 
-$coordArr = Bike_Info::getCoordMarkerData($conn, $userId['id']);
+$coordArr = Bike_Info::getCoordMarkerData($conn, $userId);
 
 echo json_encode($coordArr);
