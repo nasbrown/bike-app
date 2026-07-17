@@ -35,9 +35,13 @@ $userInfo = $oauth->userinfo->get();
 $user->firstName = $userInfo->getGivenName();
 $user->lastName = $userInfo->getFamilyName();
 $user->userEmail = $userInfo->email;
+$user->accessToken = $token['access_token'];
+$user->refreshToken = $token['refresh_token'];
 
 if($user->doesEmailExist($conn, $user->userEmail)){
     $user->saveCredentials($conn);
+} else{
+    $user->updateTokens($conn, $user->getId($conn, $userInfo->email));
 }
 
 Url::redirect('/bike-app/admin/');

@@ -7,6 +7,10 @@ if (!GoogleAuth::isLoggedIn()) {
 }
 $data = new Bike_Info();
 
+$user = new User();
+
+$conn = require('../includes/db.php');
+
 $client = new Google\Client;
 
 $client->setClientId(BIKE_CLIENT_ID);

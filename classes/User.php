@@ -47,13 +47,14 @@ class User
 
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC)['id'];
     }
 
-    public function updateTokens(PDO $conn, int $id, string $email){
-        if($this->doesEmailExist($conn, $email)){
-            $sql = "INSERT INTO users(access_token, refresh_token) " .
-                    "VALUES(:access_token, :refresh_token) WHERE id = $id";
+    public function updateTokens(PDO $conn, int $id){
+            $sql = "UPDATE users
+            SET access_token = :access_token,
+                 refresh_token = :refresh_token
+                 " . "WHERE id = $id";
 
             $stmt = $conn->prepare($sql);
 
@@ -61,6 +62,15 @@ class User
             $stmt->bindValue(':refresh_token', $this->refreshToken, PDO::PARAM_STR);
 
             $stmt->execute();
-        }
+    }
+
+    public function getRefreshToken(PDO $conn, int $id){
+        $sql = "SELECT refresh_token FROM users WHERE id = $id";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC)['refresh_token'];
     }
 }
