@@ -30,7 +30,7 @@ $data->bikeLat = $_POST['coordinatesLat'] ?? 'Nas';
 
 $data->bikeLong = $_POST['coordinatesLng'] ?? 'Nas';
 
-$userIdAArr = User::getId($conn, $userInfo->email);
+$userIdAArr = User::getId($conn, $userInfo->email)['id'];
 
 $data->bikeUserId = $userIdAArr;
 

@@ -20,7 +20,7 @@ $userInfo = $oauth->userinfo->get();
 
 $conn = require('db.php');
 
-$userId = User::getId($conn, $userInfo->email);
+$userId = User::getId($conn, $userInfo->email)['id'];
 
 $coordArr = Bike_Info::getCoordMarkerData($conn, $userId);
 

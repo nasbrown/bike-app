@@ -35,13 +35,20 @@ $userInfo = $oauth->userinfo->get();
 $user->firstName = $userInfo->getGivenName();
 $user->lastName = $userInfo->getFamilyName();
 $user->userEmail = $userInfo->email;
-$user->accessToken = $token['access_token'];
 $user->refreshToken = $token['refresh_token'];
+
+$id = $user->getId($conn, $userInfo->email)['id'];
+
+if(!isset($_SESSION['id'])){
+    $_SESSION['id'] = [];
+}
+
+$_SESSION['id'] = $id;
 
 if($user->doesEmailExist($conn, $user->userEmail)){
     $user->saveCredentials($conn);
 } else{
-    $user->updateTokens($conn, $user->getId($conn, $userInfo->email));
+    $user->updateRefreshToken($conn, $id);
 }
 
-Url::redirect('/bike-app/admin/');
+Url::redirect("/bike-app/admin/index.php?id=$id");
