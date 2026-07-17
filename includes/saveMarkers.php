@@ -24,4 +24,12 @@ $userId = User::getId($conn, $userInfo->email);
 
 $coordArr = Bike_Info::getCoordMarkerData($conn, $userId);
 
-echo json_encode($coordArr);
+if(!empty($coordArr)){
+    echo json_encode($coordArr);
+} else{
+    echo json_encode([
+        'staus' => 'error'
+    ]);
+}
+
+?>

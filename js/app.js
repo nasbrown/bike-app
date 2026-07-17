@@ -78,9 +78,9 @@ const fetchMarkerValues = async () => {
             throw new Error(`HTTP Status error: ${res.status}`)
         }
 
-        const data = await res.json()
+      const data = await res.json()
 
-       return data
+      return data
 
     } catch(error){
         console.error(`${error}`)
@@ -88,9 +88,11 @@ const fetchMarkerValues = async () => {
 }
 
 const initializeRenderedMarkers = async () => {
+    
     let data = await fetchMarkerValues()
 
-    let markers = await data.map((marker) => {
+    if(Array.isArray(data)){
+         let markers = await data.map((marker) => {
             return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).
                             bindPopup(`
                                 <div>${marker.location_name}</div>
@@ -99,6 +101,10 @@ const initializeRenderedMarkers = async () => {
                                 `).
                             openPopup(), map)
         })
+  
+    } else {
+        document.getElementById('user-data').innerHTML = `<h2>Click on the map and save a location on the map!</h2>`
+   }
 }
 
 await initializeRenderedMarkers()
