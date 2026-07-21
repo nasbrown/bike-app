@@ -6,7 +6,7 @@ class File
     public function validateAndUploadImage(PDO $conn, $data)
     {
         try {
-            switch ($_FILES['file']['error']) {
+            switch ($_FILES['image-file']['error']) {
                 case UPLOAD_ERR_OK:
                     break;
                 case UPLOAD_ERR_NO_FILE:
@@ -33,19 +33,19 @@ class File
 
             $base = $path['filename'];
 
-            $base = preg_replace("/[a-zA-Z0-9_-]/", "_", $base);
+            $base = preg_replace("/[^a-zA-Z0-9_-]/", "_", $base);
 
             $base = mb_substr($base, 0, 200);
 
             $filename = $base . "." . $path['extension'];
 
-            $destination = "/bike-app/admin/uploads/$filename";
+            $destination = "../uploads/$filename";
 
             $i = 1;
 
             while(file_exists($destination)){
                 $filename = $base . "-$i." . $path['extension'];
-                $destination = "/bike-app/admin/uploads/$filename";
+                $destination = "../uploads/$filename";
                 $i++;
             }
 
@@ -57,7 +57,7 @@ class File
 
                 if($data->setImageFile($conn, $filename)){
                     if($previous_image){
-                        unlink("/bike-app/admin/uploads/$previous_image");
+                        unlink("../uploads/$previous_image");
                     }
                 }
             } else{

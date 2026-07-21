@@ -171,9 +171,14 @@ document.addEventListener('submit', async(e) => {
                             bikeLocationFormData.get('loc-name'),
                             bikeLocationFormData.get('image-file'),
                         map)
+            
+            if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
+                document.getElementById('user-data').textContent = ''
+            }
 
 
         } catch (error) {
+            console.log(error)
             console.error(`${error}, ${JSON.stringify(bikeLocationFormData)}`)
         }
     }

@@ -56,4 +56,17 @@ class Bike_Info {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
       
    }
+
+   public function setImageFile(PDO $conn, string $filename){
+        $sql = "UPDATE parkingInfo
+                SET image_file = :image_file
+                WHERE user_id = :user_id";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bindValue(":image_file", $filename, PDO::PARAM_STR);
+        $stmt->bindValue(":user_id", $this->bikeUserId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+   }
 }
