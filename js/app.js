@@ -70,9 +70,9 @@ let map = initializeMap('map', mapFunctions.coordinatesArray, 20)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
-const fetchMarkerValues = async () => {
+const fetchMarkerData = async () => {
     try{
-        const res = await fetch('/bike-app/includes/saveMarkers.php')
+        const res = await fetch('/bike-app/includes/markerData.php')
 
         if(!res.ok){
             throw new Error(`HTTP Status error: ${res.status}`)
@@ -89,7 +89,7 @@ const fetchMarkerValues = async () => {
 
 const initializeRenderedMarkers = async () => {
     
-    let data = await fetchMarkerValues()
+    let data = await fetchMarkerData()
 
     if(Array.isArray(data)){
          let markers = await data.map((marker) => {
@@ -161,15 +161,13 @@ document.addEventListener('submit', async(e) => {
                 throw new Error(`HTTP Status error: ${res.status}`)
             }
 
-            const data = await res.text()
-
-            console.log(data)
+            const data = await res.json()
 
             map.closePopup()
 
             renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),
-                            bikeLocationFormData.get('image-file'),
+                            data.image_file,
                         map)
             
             if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
@@ -178,7 +176,6 @@ document.addEventListener('submit', async(e) => {
 
 
         } catch (error) {
-            console.log(error)
             console.error(`${error}, ${JSON.stringify(bikeLocationFormData)}`)
         }
     }

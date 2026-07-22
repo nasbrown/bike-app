@@ -30,13 +30,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data->bikeLong = $_POST['coordinatesLng'];
 
-    $userIdAArr = User::getId($conn, $userInfo->email)['id'];
+    $userId = User::getId($conn, $userInfo->email)['id'];
 
-    $data->bikeUserId = $userIdAArr;
+    $data->bikeUserId = $userId;
 
     $files->validateAndUploadImage($conn, $data); 
+
+    $imageArr = $data->getImage($conn, $userId);
+}
+
+if(!empty($imageArr)){
+    echo json_encode($imageArr);
+} else {
+    echo json_encode([
+        "status" => "error"
+    ]);
 }
 
 ?>
-
-<h1><?= $data->bikeLat . ", " . $data->bikeLong ?></h1>

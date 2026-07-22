@@ -53,11 +53,9 @@ class File
 
                 $data->saveInfo($conn, $filename);
 
-                echo "File uploaded successfully!";
-
                 $previous_image = $data->bikeImage;
 
-                $data->bikeImageID = $data->getImageId($conn, $data->bikeLat, $data->bikeUserId)['image_id'];
+                $data->bikeImageID = $data->getImageId($conn, $data->bikeUserId)['image_id'];
 
                 if($data->setImageFile($conn, $filename)){
                     if(file_exists($previous_image)){
@@ -65,7 +63,7 @@ class File
                     }
                 }
             } else{
-                die('An error has occurred');
+                die(json_encode(["status" => 'An error has occurred']));
             }
         } catch (Exception $e) {
             $this->errors[] = $e->getMessage();

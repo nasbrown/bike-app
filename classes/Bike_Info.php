@@ -11,7 +11,7 @@ class Bike_Info
     public array $userCoordArr = [];
     public array $errors = [];
 
-    public function getInfo(PDO $conn): array
+    public static function getInfo(PDO $conn): array
     {
         $sql = "SELECT * FROM parkingInfo";
 
@@ -77,20 +77,24 @@ class Bike_Info
         return $stmt->execute();
     }
 
-    public function getImageId(PDO $conn, string $coordLat, string $userId){
-        $sql = "SELECT image_id FROM parkingInfo WHERE coord_lat = $coordLat AND user_id = $userId";
+    public function getImage(PDO $conn, string $id){
+        $sql = "SELECT image_file FROM parkingInfo WHERE coord_lat = :coord_lat AND user_id = $id";
 
         $stmt = $conn->prepare($sql);
+
+        $stmt->bindValue(":coord_lat", $this->bikeLat, PDO::PARAM_STR);
 
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getImage(PDO $conn, string $imageId){
-        $sql = "SELECT image_file FROM parkingInfo WHERE image_id = $imageId";
+    public function getImageId(PDO $conn, string $id){
+        $sql = "SELECT image_id FROM parkingInfo WHERE coord_lat = :coord_lat AND user_id = $id";
 
         $stmt = $conn->prepare($sql);
+
+        $stmt->bindValue(":coord_lat", $this->bikeLat, PDO::PARAM_STR);
 
         $stmt->execute();
 
