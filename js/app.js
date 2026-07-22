@@ -138,6 +138,26 @@ if(mapFunctions.markerArr.length >= 2){
 }
 })
 
+const getUploadedImage = async () => {
+
+    try {
+       const res = await fetch(`/bike-app/includes/uploads.php`)
+       
+       if(!res.ok){
+            throw new Error(`HTTP Status Error: ${res.status}`)
+       }
+
+       const data = await res.text()
+
+       return console.log(data)
+
+    } catch (error) {
+       console.error(`Error: ${error}`) 
+    }
+
+
+}
+
 document.addEventListener('submit', async(e) => {
     e.preventDefault()
 
@@ -166,6 +186,8 @@ document.addEventListener('submit', async(e) => {
             console.log(data)
 
             map.closePopup()
+
+            await getUploadedImage()
 
             renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),

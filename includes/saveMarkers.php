@@ -31,5 +31,3 @@ if(!empty($coordArr)){
         'staus' => 'error'
     ]);
 }
-
-?>

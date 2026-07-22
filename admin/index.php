@@ -18,8 +18,6 @@ $data = new Bike_Info();
 
 $user = new User();
 
-$files = new File();
-
 $conn = require('../includes/db.php');
 
 $client = new Google\Client;

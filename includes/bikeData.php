@@ -22,29 +22,21 @@ $oauth = new Google\Service\Oauth2($client);
 
 $userInfo = $oauth->userinfo->get();
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$userIdAArr = User::getId($conn, $userInfo->email)['id'];
+    $data->bikeName = htmlspecialchars($_POST['loc-name']);
 
-$data->bikeUserId = $userIdAArr;
-    
-$data->bikeName = htmlspecialchars($_POST['loc-name']);
+    $data->bikeLat = $_POST['coordinatesLat'];
 
-$data->bikeImage = htmlspecialchars($_FILES['image-file']['name']);
+    $data->bikeLong = $_POST['coordinatesLng'];
 
-$files->validateAndUploadImage($conn, $data);
+    $userIdAArr = User::getId($conn, $userInfo->email)['id'];
 
-$data->bikeLat = $_POST['coordinatesLat'] ?? 'Nas';
+    $data->bikeUserId = $userIdAArr;
 
-$data->bikeLong = $_POST['coordinatesLng'] ?? 'Nas';
-
-$data->saveInfo($conn);
-
+    $files->validateAndUploadImage($conn, $data); 
 }
 
 ?>
 
 <h1><?= $data->bikeLat . ", " . $data->bikeLong ?></h1>
-
-
-

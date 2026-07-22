@@ -49,19 +49,25 @@ class File
                 $i++;
             }
 
-            
             if(move_uploaded_file($_FILES['image-file']['tmp_name'], $destination)){
-                echo "File was uploaded successfully";
+
+                $data->saveInfo($conn, $filename);
+
+                $data->bikeImageID = $data->getImageId($conn, $data->bikeLat, $data->bikeUserId)['image_id'];
+
+                echo "File uploaded successfully!";
 
                 $previous_image = $data->bikeImage;
 
                 if($data->setImageFile($conn, $filename)){
-                    if($previous_image){
+                    if(file_exists($previous_image)){
                         unlink("../uploads/$previous_image");
+                    } else {
+                        echo 'wtf';
                     }
                 }
             } else{
-                exit('An error has occurred');
+                die('An error has occurred');
             }
         } catch (Exception $e) {
             $this->errors[] = $e->getMessage();
