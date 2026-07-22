@@ -54,7 +54,7 @@ class Bike_Info
 
     public static function getCoordMarkerData(PDO $conn, int $id): array
     {
-        $sql = "SELECT location_name, image_file, coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
+        $sql = "SELECT location_name, image_file, image_id, coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
 
         $stmt = $conn->prepare($sql);
 
@@ -87,6 +87,16 @@ class Bike_Info
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getImage(PDO $conn, string $imageId){
+        $sql = "SELECT image_file FROM parkingInfo WHERE image_id = $imageId";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public static function generateImageID(): string{
         
     $data = random_bytes(16);
@@ -97,10 +107,5 @@ class Bike_Info
 
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
         
-    }
-
-    public function updateImageName(PDO $conn, string $image){
-        $sql = "UPDATE parkingInfo
-                SET image_file = $image";
     }
 }

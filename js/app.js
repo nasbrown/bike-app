@@ -1,4 +1,4 @@
-const initializeMap = (id = 'map', coordinates = ['42.0988', '-75.9206'], num = 15) => {
+const initializeMap = (id = 'map', coordinates = ['42.0988', '-75.9206'], num = 20) => {
     return L.map(id, {center: coordinates, zoom: num})
 }
 
@@ -66,7 +66,7 @@ const mapMethods = async () => {
 
 const mapFunctions = await mapMethods()
 
-let map = initializeMap('map', mapFunctions.coordinatesArray, 15)
+let map = initializeMap('map', mapFunctions.coordinatesArray, 20)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
@@ -96,7 +96,7 @@ const initializeRenderedMarkers = async () => {
             return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).
                             bindPopup(`
                                 <div>${marker.location_name}</div>
-                                <div><img src="${marker.image_file}"></div>
+                                <div><img src="../uploads/${marker.image_file}"></div>
                                 <div>Coordinates: [${marker.coord_lat}, ${marker.coord_lng}]</div>
                                 `).
                             openPopup(), map)
@@ -138,26 +138,6 @@ if(mapFunctions.markerArr.length >= 2){
 }
 })
 
-const getUploadedImage = async () => {
-
-    try {
-       const res = await fetch(`/bike-app/includes/uploads.php`)
-       
-       if(!res.ok){
-            throw new Error(`HTTP Status Error: ${res.status}`)
-       }
-
-       const data = await res.text()
-
-       return console.log(data)
-
-    } catch (error) {
-       console.error(`Error: ${error}`) 
-    }
-
-
-}
-
 document.addEventListener('submit', async(e) => {
     e.preventDefault()
 
@@ -186,8 +166,6 @@ document.addEventListener('submit', async(e) => {
             console.log(data)
 
             map.closePopup()
-
-            await getUploadedImage()
 
             renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),

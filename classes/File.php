@@ -53,17 +53,15 @@ class File
 
                 $data->saveInfo($conn, $filename);
 
-                $data->bikeImageID = $data->getImageId($conn, $data->bikeLat, $data->bikeUserId)['image_id'];
-
                 echo "File uploaded successfully!";
 
                 $previous_image = $data->bikeImage;
 
+                $data->bikeImageID = $data->getImageId($conn, $data->bikeLat, $data->bikeUserId)['image_id'];
+
                 if($data->setImageFile($conn, $filename)){
                     if(file_exists($previous_image)){
                         unlink("../uploads/$previous_image");
-                    } else {
-                        echo 'wtf';
                     }
                 }
             } else{
