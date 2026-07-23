@@ -18,9 +18,34 @@ const addToMap = (func, theMap) => {
 }
 
 const getUserLocation = (coords = ['42.0988', '-75.9206']) => {
+
+    let coordinates = []
+
     navigator.geolocation.getCurrentPosition((position) => {
         return coords = [`${position.coords.latitude}`, `${position.coords.longitude}`]
     })
+
+    coordinates = coords
+
+    return coordinates
+}
+
+const getActualUserLocation = (coords = ['42.0988', '-75.9206']) => {
+    let watchId = null
+
+    const positionOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    }
+
+        watchId = navigator.geolocation.watchPosition((newPos) => {
+             coords = [`${newPos.coords.latitude}`, `${newPos.coords.longitude}`]
+
+        }, (error) => {
+            console.warn(`${error.message}`)
+        }, positionOptions)
+ 
 
     return coords
 }
@@ -32,8 +57,8 @@ const getLocationPermissionState = async () => {
         let state =  await permission.state
 
         if(state === 'granted'){
-           
-            return getUserLocation()
+
+            return getActualUserLocation()
         } else if (state === 'denied'){
 
             let body = document.body
@@ -43,7 +68,7 @@ const getLocationPermissionState = async () => {
             `
         } else if (state === 'prompt') {
           
-           return getUserLocation()
+           return getActualUserLocation()
         }
 
     } catch (error){
@@ -66,7 +91,9 @@ const mapMethods = async () => {
 
 const mapFunctions = await mapMethods()
 
-let map = initializeMap('map', mapFunctions.coordinatesArray, 20)
+console.log(getActualUserLocation())
+
+let map = initializeMap('map', getActualUserLocation(), 18)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
