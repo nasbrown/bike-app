@@ -27,6 +27,26 @@
     text-decoration: none;
 }
 
+.data-container{
+    display: flex;
+    align-items: center;
+    border: solid 1px black;
+}
+
 .hidden {
     display: none;
+}
+
+.logout a{
+    color: black;
+}
+
+.data-img img{
+    width: 2rem;
+    height: 2rem;
+}
+
+.data-img-pop img{
+    width: 1rem;
+    height: 1rem;
 }

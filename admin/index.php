@@ -10,8 +10,8 @@ $requested_id = $_GET['id'];
 
 $actual_id = $_SESSION['id'];
 
-if((int)$requested_id !== $actual_id){
-    exit("You do not have access to this page, please return: <a href='" . "/bike-app/admin/index.php?id=$actual_id'" . ">here</a>" );
+if ((int)$requested_id !== $actual_id) {
+    exit("You do not have access to this page, please return: <a href='" . "/bike-app/admin/index.php?id=$actual_id'" . ">here</a>");
 }
 
 $data = new Bike_Info();
@@ -26,18 +26,18 @@ $client->setClientId(BIKE_CLIENT_ID);
 
 $client->setClientSecret(BIKE_CLIENT_SECRET);
 
-$client->setAccessType('offline'); 
+$client->setAccessType('offline');
 
-if($client->isAccessTokenExpired()){
+if ($client->isAccessTokenExpired()) {
     $refreshToken = $user->getRefreshToken($conn, $actual_id);
-    
-    if($refreshToken){
+
+    if ($refreshToken) {
         $newToken = $client->fetchAccessTokenWithRefreshToken($refreshToken);
         $_SESSION['access_token'] = $newToken;
         $client->setAccessToken($_SESSION['access_token']);
     }
 } else {
-    
+
     $client->setAccessToken($_SESSION['access_token']);
 }
 
@@ -49,14 +49,12 @@ $userInfo = $oauth->userinfo->get();
 
 <?php require('../includes/header.php') ?>
 <section>
-    <h1>Bike Parking Map</h1>
-    <h2>Welcome <?= $userInfo->givenName ?>!</h2>
-    <div>
-        <button id="get-loc" onclick="getLocationPermissionState()">Get Location</button>
-    </div>
-    <div>
-        <a href="/bike-app/logout.php">Logout</a>
-    </div>
+    <div class="user-info">
+        <h1>Bike Parking Map</h1>
+        <h2>Welcome <?= $userInfo->givenName ?>!</h2>
+        <div class="logout">
+            <a href="/bike-app/logout.php">Logout</a>
+        </div>
     <?php if (!empty($data->errors)): ?>
         <ul>
             <?php foreach ($data->errors as $error): ?>
@@ -64,6 +62,7 @@ $userInfo = $oauth->userinfo->get();
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
+    </div>
     <div id="map">
 
     </div>

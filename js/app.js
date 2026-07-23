@@ -91,21 +91,51 @@ const initializeRenderedMarkers = async () => {
     
     let data = await fetchMarkerData()
 
+    const userData = document.getElementById('user-data')
+
     if(Array.isArray(data)){
          let markers = await data.map((marker) => {
             return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).
                             bindPopup(`
                                 <div>${marker.location_name}</div>
-                                <div><img src="../uploads/${marker.image_file}"></div>
+                                <div class="data-img-pop"><img src="../uploads/${marker.image_file}"></div>
                                 <div>Coordinates: [${marker.coord_lat}, ${marker.coord_lng}]</div>
                                 `).
                             openPopup(), map)
         })
   
     } else {
-        document.getElementById('user-data').innerHTML = `<h2>Click on the map and save a location on the map!</h2>`
+        userData.innerHTML = `<h2>Click on the map and save a location on the map!</h2>`
    }
 }
+
+const initializePastLocations = async () => {
+    let data = await fetchMarkerData()
+
+    let dataHtml = ''
+
+    const userData = document.getElementById('user-data')
+
+    if(Array.isArray(data)){
+        dataHtml = await data.map((user) => {
+            return `
+                <div class="data-container">
+                    <div class="data-img">
+                        <img src="../uploads/${user.image_file}">
+                    </div>
+                    <div class="data-block">
+                        <p>Location: ${user.location_name}</p>
+                        <button data-id="user-${user.user_id}">Go To Location</button>
+                    </div>
+                </div>
+            ` 
+        }).join('')
+    }
+
+    userData.insertAdjacentHTML('beforeend', dataHtml)
+}
+
+await initializePastLocations()
 
 await initializeRenderedMarkers()
 
@@ -198,8 +228,8 @@ const insertFormHtml = () => {
                         <label for="image-file">Take your pictures</label>
                     </div>
                     <div>
-                        <input type="file" id="image-file" name="image-file" required>
+                        <input type="file" id="image-file" accept="image/*" capture="environment" name="image-file" required>
                     </div>
-                    <button type="submit">Submit</button>
+                    <button id="capture-btn" type="submit">Take Photo</button>
                 </form>`
 }
