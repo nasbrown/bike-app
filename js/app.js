@@ -180,6 +180,8 @@ let coordinates = [e.latlng.lat, e.latlng.lng]
 
 let marker = addToMap(myNewMarker(coordinates), map)
 
+//marker._icon.classList.add("hue-change")
+
 mynewPopup(coordinates, insertFormHtml(), map)
 
 mapFunctions.coordPair.push(coordinates)
@@ -224,6 +226,8 @@ document.addEventListener('submit', async(e) => {
                             bikeLocationFormData.get('loc-name'),
                             data.image_file,
                         map)
+
+            await initializePastLocations()
             
             if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
                 document.getElementById('user-data').textContent = ''

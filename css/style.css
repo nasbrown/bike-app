@@ -35,10 +35,6 @@
     color: black;
 }
 
-.data-block{
-    
-}
-
 .data-container{
     display: flex;
     align-items: center;
@@ -46,6 +42,10 @@
     margin-bottom: .5rem;
     border-radius: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+img.hue-change{
+    filter: hue-rotate(90deg);
 }
 
 .data-img img{
