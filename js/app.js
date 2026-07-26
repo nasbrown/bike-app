@@ -91,8 +91,6 @@ const mapMethods = async () => {
 
 const mapFunctions = await mapMethods()
 
-console.log(getActualUserLocation())
-
 let map = initializeMap('map', getActualUserLocation(), 18)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
