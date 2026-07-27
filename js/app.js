@@ -58,7 +58,7 @@ const getLocationPermissionState = async () => {
 
         if(state === 'granted'){
 
-            return getActualUserLocation()
+            return getUserLocation()
         } else if (state === 'denied'){
 
             let body = document.body
@@ -68,7 +68,7 @@ const getLocationPermissionState = async () => {
             `
         } else if (state === 'prompt') {
           
-           return getActualUserLocation()
+           return getUserLocation()
         }
 
     } catch (error){
@@ -91,7 +91,7 @@ const mapMethods = async () => {
 
 const mapFunctions = await mapMethods()
 
-let map = initializeMap('map', getActualUserLocation(), 18)
+let map = initializeMap('map', getUserLocation(), 18)
 
 initializeTileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', 19, '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>', map)
 
@@ -104,6 +104,8 @@ const fetchMarkerData = async () => {
         }
 
       const data = await res.json()
+
+      console.log(data)
 
       return data
 
@@ -135,14 +137,14 @@ const initializeRenderedMarkers = async () => {
 }
 
 const initializePastLocations = async () => {
-    let data = await fetchMarkerData()
+    let dataLoc = await fetchMarkerData()
 
     let dataHtml = ''
 
     const userData = document.getElementById('user-data')
 
-    if(Array.isArray(data)){
-        dataHtml = await data.map((user) => {
+    if(Array.isArray(dataLoc)){
+        dataHtml = await dataLoc.map((user) => {
             return `
                 <div class="data-container">
                     <div class="data-img">
@@ -174,6 +176,10 @@ const renderMarker = (coords = [], locName, imgFile, map) => {
                             openPopup(), map)
 }
 
+const renderDataBlock = (image_file, location_name, user_id) => {
+    return
+}
+
 map.on('click', (e) =>{
 
 let coordinates = [e.latlng.lat, e.latlng.lng]
@@ -202,7 +208,7 @@ document.addEventListener('submit', async(e) => {
 
         let bikeElem = document.getElementById('form-save-db')
 
-        const bikeLocationFormData = new FormData(bikeElem);
+        const bikeLocationFormData = new FormData(bikeElem)
 
         bikeLocationFormData.append('coordinatesLat', `${mapFunctions.coordPair[0][0]}`)
 
@@ -222,12 +228,12 @@ document.addEventListener('submit', async(e) => {
 
             map.closePopup()
 
+            console.log(data)
+
             renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),
                             data.image_file,
                         map)
-
-            await initializePastLocations()
             
             if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
                 document.getElementById('user-data').textContent = ''
