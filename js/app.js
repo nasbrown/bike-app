@@ -81,11 +81,13 @@ const mapMethods = async () => {
     let coords = await getLocationPermissionState()
     let coordPairsArr = []
     let markArr = []
+    let dataBlockArr = []
 
     return {
         coordinatesArray: coords,
         coordPair: coordPairsArr,
-        markerArr: markArr
+        markerArr: markArr,
+        dataArr: dataBlockArr
     }
 }
 
@@ -104,8 +106,6 @@ const fetchMarkerData = async () => {
         }
 
       const data = await res.json()
-
-      console.log(data)
 
       return data
 
@@ -144,7 +144,9 @@ const initializePastLocations = async () => {
     const userData = document.getElementById('user-data')
 
     if(Array.isArray(dataLoc)){
-        dataHtml = await dataLoc.map((user) => {
+        mapFunctions.dataArr = dataLoc
+
+        dataHtml = mapFunctions.dataArr.map((user) => {
             return `
                 <div class="data-container">
                     <div class="data-img">
@@ -152,7 +154,7 @@ const initializePastLocations = async () => {
                     </div>
                     <div class="data-block">
                         <p>Location: ${user.location_name}</p>
-                        <button data-id="user-${user.user_id}">Go To Location</button>
+                        <button data-id="user-${user.id}">Go To Location</button>
                     </div>
                 </div>
             ` 
@@ -176,8 +178,40 @@ const renderMarker = (coords = [], locName, imgFile, map) => {
                             openPopup(), map)
 }
 
-const renderDataBlock = (image_file, location_name, user_id) => {
-    return
+const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_lng, id) => {
+    let dataObj = {
+        location_name: location_name,
+        id: id,
+        image_file: image_file,
+        image_id: image_id,
+        coord_lat: `${coord_lat}`,
+        coord_lng: `${coord_lng}`
+    }
+
+    let dataHtml = ''
+
+    mapFunctions.dataArr.push(dataObj)
+
+    dataHtml = mapFunctions.dataArr.map((user) => {
+        return `
+        <div class="data-container">
+                    <div class="data-img">
+                        <img src="../uploads/${user.image_file}">
+                    </div>
+                    <div class="data-block">
+                        <p>Location: ${user.location_name}</p>
+                        <button data-id="user-${user.id}">Go To Location</button>
+                    </div>
+                </div>
+    `
+    }).join('')
+
+
+    const userData = document.getElementById('user-data')
+
+    console.log(dataHtml)
+
+    userData.insertAdjacentHTML('beforeend', dataHtml)
 }
 
 map.on('click', (e) =>{
@@ -186,7 +220,7 @@ let coordinates = [e.latlng.lat, e.latlng.lng]
 
 let marker = addToMap(myNewMarker(coordinates), map)
 
-//marker._icon.classList.add("hue-change")
+marker._icon.classList.add("hue-change")
 
 mynewPopup(coordinates, insertFormHtml(), map)
 
@@ -228,16 +262,20 @@ document.addEventListener('submit', async(e) => {
 
             map.closePopup()
 
-            console.log(data)
+            renderDataBlock(data.image_file, 
+                bikeLocationFormData.get('loc-name'),
+            data.image_id,
+        mapFunctions.coordPair[0][0],
+    mapFunctions.coordPair[0][1], data.id)
 
             renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),
                             data.image_file,
                         map)
             
-            if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
-                document.getElementById('user-data').textContent = ''
-            }
+            //if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
+                //document.getElementById('user-data').textContent = ''
+            //}
 
 
         } catch (error) {

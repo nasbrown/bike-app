@@ -54,7 +54,7 @@ class Bike_Info
 
     public static function getCoordMarkerData(PDO $conn, int $id): array
     {
-        $sql = "SELECT location_name, image_file, image_id, coord_lat, coord_lng FROM parkingInfo WHERE user_id = $id";
+        $sql = "SELECT * FROM parkingInfo WHERE user_id = $id";
 
         $stmt = $conn->prepare($sql);
 
@@ -78,7 +78,7 @@ class Bike_Info
     }
 
     public function getImage(PDO $conn, string $id){
-        $sql = "SELECT image_file FROM parkingInfo WHERE coord_lat = :coord_lat AND user_id = $id";
+        $sql = "SELECT * FROM parkingInfo WHERE coord_lat = :coord_lat AND user_id = $id";
 
         $stmt = $conn->prepare($sql);
 
