@@ -9,7 +9,7 @@ const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
     }).addTo(theMap)
 }
 
-const myNewMarker = (coordinates = []) => { //factory functions
+const myNewMarker = (coordinates = []) => { 
     return L.marker(coordinates)
 }
 
@@ -156,6 +156,9 @@ const initializePastLocations = async () => {
                         <p>Location: ${user.location_name}</p>
                         <button data-id="user-${user.id}">Go To Location</button>
                     </div>
+                    <div class="data-x">
+                        <i class="fa-solid fa-x"></i>
+                    </div>
                 </div>
             ` 
         }).join('')
@@ -188,24 +191,22 @@ const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_l
         coord_lng: `${coord_lng}`
     }
 
-    let dataHtml = ''
-
     mapFunctions.dataArr.push(dataObj)
 
-    dataHtml = mapFunctions.dataArr.map((user) => {
-        return `
+    let dataHtml = `
         <div class="data-container">
                     <div class="data-img">
-                        <img src="../uploads/${user.image_file}">
+                        <img src="../uploads/${dataObj.image_file}">
                     </div>
                     <div class="data-block">
-                        <p>Location: ${user.location_name}</p>
-                        <button data-id="user-${user.id}">Go To Location</button>
+                        <p>Location: ${dataObj.location_name}</p>
+                        <button data-id="user-${dataObj.id}">Go To Location</button>
+                    </div>
+                    <div class="data-x">
+                        <i class="fa-solid fa-x"></i>
                     </div>
                 </div>
     `
-    }).join('')
-
 
     const userData = document.getElementById('user-data')
 
@@ -272,10 +273,6 @@ document.addEventListener('submit', async(e) => {
                             bikeLocationFormData.get('loc-name'),
                             data.image_file,
                         map)
-            
-            //if(document.getElementById('user-data').textContent = `Click on the map and save a location on the map!`){
-                //document.getElementById('user-data').textContent = ''
-            //}
 
 
         } catch (error) {
