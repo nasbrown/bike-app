@@ -102,12 +102,12 @@ class Bike_Info
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function deleteBikeLoc(PDO $conn, string $id){
+    public function deleteBikeLoc(PDO $conn){
         $sql = "DELETE FROM parkingInfo WHERE id = :id";
 
         $stmt = $conn->prepare($sql);
 
-        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $stmt->bindValue(":id", $this->bikeId, PDO::PARAM_INT);
 
         $stmt->execute();
     }

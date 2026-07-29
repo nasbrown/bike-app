@@ -16,15 +16,17 @@ $client->setClientSecret(BIKE_CLIENT_SECRET);
 
 $client->setAccessToken($_SESSION['access_token']);
 
-$string = '';
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
-if($_SERVER['REQUEST_METHOD'] === "POST"){
+    $json = file_get_contents("php://input");
 
-    $data->bikeId = $_POST[''];
+    $clientData = json_decode($json, true);
 
-   $data->deleteBikeLoc($conn, '');
+    $data->bikeId = $clientData['id'];
+
+    $data->deleteBikeLoc($conn);
 }
 
- echo json_encode([
-        "status" => $string
-    ]);
+echo json_encode([
+    "status" => "success!"
+]);

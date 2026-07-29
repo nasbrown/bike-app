@@ -216,7 +216,7 @@ const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_l
 
     let dataHtml = getBikeDataHtml(mapFunctions.dataArr)
 
-    renderData(dataHtml)
+    render(dataHtml)
 }
 
 map.on('click', (e) =>{
@@ -281,8 +281,7 @@ document.addEventListener('submit', async(e) => {
                             mapFunctions.coordPair[0][1], 
                             data.id)
 
-            renderMarker([mapFunctions.coordPair[0][0], 
-                          mapFunctions.coordPair[0][1]], 
+            renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                           bikeLocationFormData.get('loc-name'),
                           data.image_file,
                           map)
@@ -338,13 +337,24 @@ const deleteBikeLoc = (bikeId) => {
 
 const deleteBikeLocFromDB = async (bikeId) => {
     try {
-        const res = await fetch(`/bike-app/includes/deleteBikeData.php`)
+        const res = await fetch(`/bike-app/includes/deleteBikeData.php`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ id: bikeId })
+        })
 
         if(!res.ok){
             throw new Error(`HTTP Status error: ${res.status}`)
         }
 
         const data = await res.text()
+
+        map.eachLayer((layer) => {
+                let coords = layer.getLatLng()
+
+                console.log(layer)
+            
+        })
 
         console.log(data)
     } catch (error) {
