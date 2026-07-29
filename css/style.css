@@ -50,6 +50,22 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.data-x{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    flex-grow: 1;
+}
+
+.data-x div i{
+    transition: 2ms;
+    cursor: pointer;
+}
+
+.data-x div i:hover{
+    color: red;
+}
+
 img.hue-change{
     filter: hue-rotate(90deg);
 }

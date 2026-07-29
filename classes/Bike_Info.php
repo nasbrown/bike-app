@@ -7,6 +7,7 @@ class Bike_Info
     public $bikeLat = null;
     public $bikeLong = null;
     public $bikeImageID;
+    public $bikeId;
     public string $bikeUserId = '';
     public array $userCoordArr = [];
     public array $errors = [];
@@ -99,6 +100,16 @@ class Bike_Info
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteBikeLoc(PDO $conn, string $id){
+        $sql = "DELETE FROM parkingInfo WHERE id = :id";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+
+        $stmt->execute();
     }
 
     public static function generateImageID(): string{

@@ -29,7 +29,7 @@ const getUserLocation = (coords = ['42.0988', '-75.9206']) => {
 
     return coordinates
 }
-
+/*
 const getActualUserLocation = (coords = ['42.0988', '-75.9206']) => {
     let watchId = null
 
@@ -49,6 +49,7 @@ const getActualUserLocation = (coords = ['42.0988', '-75.9206']) => {
 
     return coords
 }
+    */
 
 const getLocationPermissionState = async () => {
     try {
@@ -89,6 +90,41 @@ const mapMethods = async () => {
         markerArr: markArr,
         dataArr: dataBlockArr
     }
+}
+
+const getBikeDataHtml = (arr) => {
+    return arr.map((data) => {
+        return `
+        <div class="data-container">
+                    <div class="data-img">
+                        <img src="../uploads/${data.image_file}">
+                    </div>
+                    <div class="data-block">
+                        <p>Location: ${data.location_name}</p>
+                        <button data-id="user-${data.id}">Go To Location</button>
+                    </div>
+                    <div class="data-x">
+                        <div>
+                            <a ping="/bike-app/includes/deleteBikeData.php">
+                                <i data-remove="${data.id}" class="fa-solid fa-x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+    `
+    }).join('')
+}
+
+const renderData = (dataHtml) => {
+    const userData = document.getElementById('user-data')
+
+    return userData.insertAdjacentHTML('beforeend', dataHtml)
+}
+
+const render = (dataHtml) => {
+    const userData = document.getElementById('user-data')
+
+    return userData.innerHTML = dataHtml
 }
 
 const mapFunctions = await mapMethods()
@@ -146,25 +182,10 @@ const initializePastLocations = async () => {
     if(Array.isArray(dataLoc)){
         mapFunctions.dataArr = dataLoc
 
-        dataHtml = mapFunctions.dataArr.map((user) => {
-            return `
-                <div class="data-container">
-                    <div class="data-img">
-                        <img src="../uploads/${user.image_file}">
-                    </div>
-                    <div class="data-block">
-                        <p>Location: ${user.location_name}</p>
-                        <button data-id="user-${user.id}">Go To Location</button>
-                    </div>
-                    <div class="data-x">
-                        <i class="fa-solid fa-x"></i>
-                    </div>
-                </div>
-            ` 
-        }).join('')
+        dataHtml = getBikeDataHtml(mapFunctions.dataArr)
     }
 
-    userData.insertAdjacentHTML('beforeend', dataHtml)
+    renderData(dataHtml)
 }
 
 await initializePastLocations()
@@ -184,7 +205,7 @@ const renderMarker = (coords = [], locName, imgFile, map) => {
 const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_lng, id) => {
     let dataObj = {
         location_name: location_name,
-        id: id,
+        id: Number(id),
         image_file: image_file,
         image_id: image_id,
         coord_lat: `${coord_lat}`,
@@ -193,26 +214,9 @@ const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_l
 
     mapFunctions.dataArr.push(dataObj)
 
-    let dataHtml = `
-        <div class="data-container">
-                    <div class="data-img">
-                        <img src="../uploads/${dataObj.image_file}">
-                    </div>
-                    <div class="data-block">
-                        <p>Location: ${dataObj.location_name}</p>
-                        <button data-id="user-${dataObj.id}">Go To Location</button>
-                    </div>
-                    <div class="data-x">
-                        <i class="fa-solid fa-x"></i>
-                    </div>
-                </div>
-    `
+    let dataHtml = getBikeDataHtml(mapFunctions.dataArr)
 
-    const userData = document.getElementById('user-data')
-
-    console.log(dataHtml)
-
-    userData.insertAdjacentHTML('beforeend', dataHtml)
+    renderData(dataHtml)
 }
 
 map.on('click', (e) =>{
@@ -234,6 +238,13 @@ if(mapFunctions.markerArr.length >= 2){
     mapFunctions.coordPair.shift(mapFunctions.coordPair[0])
     return
 }
+})
+
+document.addEventListener('click', async (e) => {
+    if(e.target.dataset.remove){
+        deleteBikeLoc(e.target.dataset.remove)
+        await deleteBikeLocFromDB(e.target.dataset.remove)
+    }
 })
 
 document.addEventListener('submit', async(e) => {
@@ -264,15 +275,17 @@ document.addEventListener('submit', async(e) => {
             map.closePopup()
 
             renderDataBlock(data.image_file, 
-                bikeLocationFormData.get('loc-name'),
-            data.image_id,
-        mapFunctions.coordPair[0][0],
-    mapFunctions.coordPair[0][1], data.id)
-
-            renderMarker([mapFunctions.coordPair[0][0], mapFunctions.coordPair[0][1]], 
                             bikeLocationFormData.get('loc-name'),
-                            data.image_file,
-                        map)
+                            data.image_id,
+                            mapFunctions.coordPair[0][0],
+                            mapFunctions.coordPair[0][1], 
+                            data.id)
+
+            renderMarker([mapFunctions.coordPair[0][0], 
+                          mapFunctions.coordPair[0][1]], 
+                          bikeLocationFormData.get('loc-name'),
+                          data.image_file,
+                          map)
 
 
         } catch (error) {
@@ -302,4 +315,39 @@ const insertFormHtml = () => {
                     </div>
                     <button id="capture-btn" type="submit">Take Photo</button>
                 </form>`
+}
+
+const deleteBikeLocById = (arr, bikeId) => {
+    return arr.filter((user) => {
+        if(user.id === Number(bikeId)){
+            return false
+        }
+
+        return true
+    })
+}
+
+const deleteBikeLoc = (bikeId) => {
+
+    mapFunctions.dataArr = deleteBikeLocById(mapFunctions.dataArr, bikeId)
+
+    let dataHtml = getBikeDataHtml(mapFunctions.dataArr)
+
+    render(dataHtml)
+} 
+
+const deleteBikeLocFromDB = async (bikeId) => {
+    try {
+        const res = await fetch(`/bike-app/includes/deleteBikeData.php`)
+
+        if(!res.ok){
+            throw new Error(`HTTP Status error: ${res.status}`)
+        }
+
+        const data = await res.text()
+
+        console.log(data)
+    } catch (error) {
+        console.error(`An error occured: ${error}`)
+    }
 }
