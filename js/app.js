@@ -103,7 +103,7 @@ const getBikeDataHtml = (arr) => {
                     </div>
                     <div class="data-block">
                         <p>Location: ${data.location_name}</p>
-                        <button data-id="user-${data.id}">Go To Location</button>
+                        <a ping="/bike-app/includes/getMarkerCoord.php" data-id="${data.image_id}">Go To Location</a>
                     </div>
                     <div class="data-x">
                         <div>
@@ -263,6 +263,8 @@ document.addEventListener('click', async (e) => {
     if(e.target.dataset.remove){
         deleteBikeLoc(e.target.dataset.remove)
         await deleteBikeLocFromDB(e.target.dataset.remove)
+    } else if(e.target.dataset.id){
+        panToLocation(e.target.dataset.id)
     }
 })
 
@@ -384,6 +386,36 @@ const deleteBikeLocFromDB = async (bikeId) => {
 
         const data = await res.json()
 
+    } catch (error) {
+        console.error(`An error occured: ${error}`)
+    }
+}
+
+const panToLocation = async (bikeImage_id) => {
+    try {
+        const res = await fetch('/bike-app/includes/getMarkerCoord.php', {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ image_id: bikeImage_id })
+        })
+
+        if(!res.ok){
+            throw new Error(`HTTP Status Error: ${res.status}`)
+        }
+
+        const data = await res.json()
+
+        let panArr = [Number(data.coord_lat), Number(data.coord_lng)]
+
+        mapFunctions.markerDataArr.forEach((marker) => {
+            let markArr = [marker._latlng.lat, marker._latlng.lng]
+            if(matchArrays(markArr, panArr)){
+                map.flyTo(marker._latlng, 18, {
+                    animate: true,
+                    duration: 2
+                })
+            }
+        })
     } catch (error) {
         console.error(`An error occured: ${error}`)
     }

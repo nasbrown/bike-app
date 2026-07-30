@@ -64,6 +64,18 @@ class Bike_Info
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCoordinatesFromImgId(PDO $conn){
+        $sql = "SELECT coord_lat, coord_lng FROM parkingInfo WHERE image_id = :image_id";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bindValue(":image_id", $this->bikeImageID, PDO::PARAM_STR);
+        
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function setImageFile(PDO $conn, string $filename)
     {
         $sql = "UPDATE parkingInfo
@@ -111,6 +123,8 @@ class Bike_Info
 
         $stmt->execute();
     }
+
+
 
     public static function generateImageID(): string{
         

@@ -82,7 +82,7 @@ const getBikeDataHtml = (arr) => {
                     </div>
                     <div class="data-block">
                         <p>Location: ${data.location_name}</p>
-                        <button data-id="user-${data.id}">Go To Location</button>
+                        <a ping="/bike-app/includes/getMarkerCoord.php" data-id="${data.image_id}">Go To Location</a>
                     </div>
                 </div>
     `
@@ -212,4 +212,44 @@ const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_l
 
 const mynewPopup = (coordinates, html = '', theMap= {}) => { //factory functions
     return L.popup().setLatLng(coordinates).setContent(html).openOn(theMap)
+}
+
+document.addEventListener('click', async (e) => {
+    if(e.target.dataset.id){
+        panToLocation(e.target.dataset.id)
+    }
+})
+
+const matchArrays = (arr1 = [], arr2 = []) => {
+    return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index])
+}
+
+const panToLocation = async (bikeImage_id) => {
+    try {
+        const res = await fetch('/bike-app/includes/getMarkerCoord.php', {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ image_id: bikeImage_id })
+        })
+
+        if(!res.ok){
+            throw new Error(`HTTP Status Error: ${res.status}`)
+        }
+
+        const data = await res.json()
+
+        let panArr = [Number(data.coord_lat), Number(data.coord_lng)]
+
+        mapFunctions.markerDataArr.forEach((marker) => {
+            let markArr = [marker._latlng.lat, marker._latlng.lng]
+            if(matchArrays(markArr, panArr)){
+                map.flyTo(marker._latlng, 18, {
+                    animate: true,
+                    duration: 2
+                })
+            }
+        })
+    } catch (error) {
+        console.error(`An error occured: ${error}`)
+    }
 }

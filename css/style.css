@@ -1,3 +1,7 @@
+p{
+    margin: 0;
+}
+
 #map{
     height: 400px;
 }
@@ -44,6 +48,7 @@
 .data-container{
     display: flex;
     align-items: center;
+    padding: .75rem;
     margin-top: .5rem;
     margin-bottom: .5rem;
     border-radius: 1rem;
@@ -60,6 +65,30 @@
 .data-x div i{
     transition: 2ms;
     cursor: pointer;
+}
+
+.data-block{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+}
+
+.data-block p{
+    margin-bottom: .25rem;
+}
+
+.data-block a{
+    padding: .5rem 1rem;
+    background-color: black;
+    color: white;
+    transition: all 2ms;
+    cursor: pointer;
+}
+
+.data-block a:hover{
+    color: black;
+    background-color: blue;
 }
 
 .data-x div i:hover{

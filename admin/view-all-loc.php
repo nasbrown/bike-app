@@ -53,7 +53,7 @@ $userInfo = $oauth->userinfo->get();
         <h1>Bike Parking Map(ALL)</h1>
         <h2>Welcome <?= $userInfo->givenName ?>!</h2>
         <div class="logout">
-            <a href="/bike-app/admin/view-all-loc.php?id=<?= $actual_id ?>">My Parking Locations</a>
+            <a href="/bike-app/admin/index.php?id=<?= $actual_id ?>">My Parking Locations</a>
             <a href="/bike-app/logout.php">Logout</a>
         </div>
     <?php if (!empty($data->errors)): ?>
