@@ -13,6 +13,8 @@ class Database {
     
         $pdo = new PDO($this->dsn);
 
+        $pdo->exec("PRAGMA journal_mode=WAL;");
+
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $pdo;
