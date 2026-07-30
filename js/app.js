@@ -1,5 +1,5 @@
 const initializeMap = (id = 'map', coordinates = ['42.0988', '-75.9206'], num = 20) => {
-    return L.map(id, {center: coordinates, zoom: num})
+        return L.map(id, {center: coordinates, zoom: num})
 }
 
 const initializeTileLayer = (tileLayer, zoom, credit, theMap) => {
@@ -348,7 +348,6 @@ const deleteBikeLocById = (arr, bikeId) => {
                         const index = mapFunctions.markerDataArr.indexOf(marker)
                         if(index > -1){
                             mapFunctions.markerDataArr.splice(index, 1)
-                            console.log('Hey')
                         }
                     }
                 })
