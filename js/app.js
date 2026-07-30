@@ -83,10 +83,12 @@ const mapMethods = async () => {
     let coordPairsArr = []
     let markArr = []
     let dataBlockArr = []
+    let mdArr = []
 
     return {
         coordinatesArray: coords,
         coordPair: coordPairsArr,
+        markerDataArr: mdArr,
         markerArr: markArr,
         dataArr: dataBlockArr
     }
@@ -157,14 +159,23 @@ const initializeRenderedMarkers = async () => {
     const userData = document.getElementById('user-data')
 
     if(Array.isArray(data)){
-         let markers = await data.map((marker) => {
-            return addToMap(myNewMarker([marker.coord_lat, marker.coord_lng]).
+
+        await data.map((marker) => {
+            let markerData = myNewMarker([marker.coord_lat, marker.coord_lng])
+
+            mapFunctions.markerDataArr.push(addToMap(markerData.
                             bindPopup(`
                                 <div>${marker.location_name}</div>
                                 <div class="data-img-pop"><img src="../uploads/${marker.image_file}"></div>
                                 <div>Coordinates: [${marker.coord_lat}, ${marker.coord_lng}]</div>
-                                `).
-                            openPopup(), map)
+                                `), map))
+
+            return addToMap(markerData.
+                            bindPopup(`
+                                <div>${marker.location_name}</div>
+                                <div class="data-img-pop"><img src="../uploads/${marker.image_file}"></div>
+                                <div>Coordinates: [${marker.coord_lat}, ${marker.coord_lng}]</div>
+                                `), map)
         })
   
     } else {
@@ -193,13 +204,21 @@ await initializePastLocations()
 await initializeRenderedMarkers()
 
 const renderMarker = (coords = [], locName, imgFile, map) => {
-    return addToMap(myNewMarker(coords).
+    let markerData = myNewMarker(coords)
+
+    mapFunctions.markerDataArr.push(addToMap(markerData.
                             bindPopup(`
                                 <div>${locName}</div>
-                                <div><img src="${imgFile}"></div>
+                                <div><img src="../uploads/${imgFile}"></div>
                                 <div>Coordinates: [${coords[0]}, ${coords[1]}]</div>
-                                `).
-                            openPopup(), map)
+                                `), map))
+
+    return addToMap(markerData.
+                            bindPopup(`
+                                <div>${locName}</div>
+                                <div><img src="../uploads/${imgFile}"></div>
+                                <div>Coordinates: [${coords[0]}, ${coords[1]}]</div>
+                                `), map)
 }
 
 const renderDataBlock = (image_file, location_name, image_id, coord_lat, coord_lng, id) => {
@@ -232,7 +251,7 @@ mynewPopup(coordinates, insertFormHtml(), map)
 mapFunctions.coordPair.push(coordinates)
 mapFunctions.markerArr.push(marker)
 
-if(mapFunctions.markerArr.length >= 2){
+if(mapFunctions.markerArr.length > 1){
     map.removeLayer(mapFunctions.markerArr[0])
     mapFunctions.markerArr.shift(mapFunctions.markerArr[0])
     mapFunctions.coordPair.shift(mapFunctions.coordPair[0])
@@ -319,11 +338,27 @@ const insertFormHtml = () => {
 const deleteBikeLocById = (arr, bikeId) => {
     return arr.filter((user) => {
         if(user.id === Number(bikeId)){
+                mapFunctions.markerDataArr.forEach((marker) => {
+                    let markArr = [marker._latlng.lat, marker._latlng.lng]
+                    let userArr = [Number(user.coord_lat), Number(user.coord_lng)]
+                    if(matchArrays(markArr, userArr)){
+                        map.removeLayer(marker)
+                        const index = mapFunctions.markerDataArr.indexOf(marker)
+                        if(index > -1){
+                            mapFunctions.markerDataArr.splice(index, 1)
+                            console.log('Hey')
+                        }
+                    }
+                })
             return false
         }
 
         return true
     })
+}
+
+const matchArrays = (arr1 = [], arr2 = []) => {
+    return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index])
 }
 
 const deleteBikeLoc = (bikeId) => {
@@ -347,16 +382,8 @@ const deleteBikeLocFromDB = async (bikeId) => {
             throw new Error(`HTTP Status error: ${res.status}`)
         }
 
-        const data = await res.text()
+        const data = await res.json()
 
-        map.eachLayer((layer) => {
-                let coords = layer.getLatLng()
-
-                console.log(layer)
-            
-        })
-
-        console.log(data)
     } catch (error) {
         console.error(`An error occured: ${error}`)
     }

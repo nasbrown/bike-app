@@ -16,11 +16,19 @@ $client->setClientSecret(BIKE_CLIENT_SECRET);
 
 $client->setAccessToken($_SESSION['access_token']);
 
+$oauth = new Google\Service\Oauth2($client);
+
+$userInfo = $oauth->userinfo->get();
+
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     $json = file_get_contents("php://input");
 
     $clientData = json_decode($json, true);
+
+    $userId = User::getId($conn, $userInfo->email)['id'];
+
+    $data->bikeUserId = $userId;
 
     $data->bikeId = $clientData['id'];
 
@@ -28,5 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 }
 
 echo json_encode([
-    "status" => "success!"
+    "status" => "success!",
+    "user" => $data->bikeUserId
 ]);
